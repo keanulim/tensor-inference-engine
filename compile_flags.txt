@@ -1,0 +1,3 @@
+-isysroot
+/Library/Developer/CommandLineTools/SDKs/MacOSX15.sdk
+-std=c++17
