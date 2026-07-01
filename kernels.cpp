@@ -3,6 +3,7 @@
 //
 #include <cmath>
 
+
 void geMM(const float* A, const float* B, float* C, int M, int N, int K) {
     for (int i = 0; i < M; i++) {
         for (int k = 0; k < K; k++) {
@@ -66,10 +67,20 @@ void layerNorm(const float* in, float* out, int d, const float* weight, const fl
     for (int i = 0;  i < d; i++) {
         out[i] = (in[i] - mean) * inverted_std * weight[i] + bias[i];
     }
+}
 
+void embedding_lookup(const size_t* token_ids, size_t seq_len, const float* weight, size_t d_model,
+    float* out) {
 
+    for (int i = 0; i < seq_len; i++) {
+        const float* src = weight + token_ids[i] * d_model; //row we want
 
+        float* dst = out + i * d_model; //where it goes
 
+        for (int j = 0; j < d_model; j++) {
+            dst[j] = src[j];
+        }
+    }
 
 
 
