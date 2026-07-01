@@ -61,8 +61,8 @@ void layerNorm(const float* in, float* out, int d, const float* weight, const fl
         sum_var += (in[i] - mean) * (in[i] - mean);
     }
 
-    float var = sum_var/d + eps;
-    float inverted_std= 1.0f /std::sqrt(var);
+    float var = sum_var/d;
+    float inverted_std= 1.0f /std::sqrt(var + eps);
 
     for (int i = 0;  i < d; i++) {
         out[i] = (in[i] - mean) * inverted_std * weight[i] + bias[i];
