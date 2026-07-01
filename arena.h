@@ -1,43 +1,46 @@
-//
-// Created by Keanu Lim on 6/18/26.
-//
-
-#ifndef UNTITLED6_ARENA_H
-#define UNTITLED6_ARENA_H
+// Created by Keanu Lim
+#ifndef TENSOR_ENGINE_ARENA_H
+#define TENSOR_ENGINE_ARENA_H
 
 #include <cstdlib>
 #include <cstddef>
+#include <stdexcept>
 
+class Arena {
+    char*  buffer;
+    size_t capacity;
+    size_t weight_end = 0;  // end of permanent weight region
+    size_t bump       = 0;  // current scratch position
 
-
-class arena {
-
-    char* buffer; //pointer to end of weights
-    size_t capacity; //total bytes
-    size_t offset; //current bytes allocated
 public:
     Arena(size_t bytes) {
-        buffer = (char*) malloc(bytes); //one malloc at the beginning to allocate memor
+        buffer   = (char*) malloc(bytes);
         capacity = bytes;
-        offset = 0;
     }
 
-    ~Arena() {
-        free(buffer); //runs when arena dies?
-    }
+    ~Arena() { free(buffer); }
 
-    float* alloc(size_t num_floats) { //move pointer x amt of bytes based off num of floats
+    // permanent — for weights loaded once at startup
+    float* alloc_static(size_t num_floats) {
         size_t bytes = num_floats * sizeof(float);
-        float* ptr = (float*)(buffer + offset);
-        offset += bytes;
+        if (weight_end + bytes > capacity) throw std::bad_alloc();
+        float* ptr = (float*)(buffer + weight_end);
+        weight_end += bytes;
+        bump = weight_end;
         return ptr;
-
     }
 
-    void reset() {
-        offset = 0;
+    // temporary — for activations during forward pass
+    float* alloc(size_t num_floats) {
+        size_t bytes = num_floats * sizeof(float);
+        if (bump + bytes > capacity) throw std::bad_alloc();
+        float* ptr = (float*)(buffer + bump);
+        bump += bytes;
+        return ptr;
     }
+
+    // wipes scratch but keeps weights
+    void reset() { bump = weight_end; }
 };
 
-
-#endif //UNTITLED6_ARENA_H
+#endif

@@ -49,6 +49,8 @@ target_include_directories(bench_all PRIVATE ${CMAKE_OSX_SYSROOT}/usr/include/c+
 add_executable(onnx_loader
         src/onnx_loader.cpp
         third_party/onnx/onnx.pb.cc
+        registry.cpp
+        kernels.cpp
 )
 
 target_include_directories(onnx_loader PRIVATE

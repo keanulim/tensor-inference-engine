@@ -1,35 +1,31 @@
-//
-// Created by Keanu Lim on 6/18/26.
-//
+// Created by Keanu Lim
+#ifndef TENSOR_ENGINE_TENSOR_H
+#define TENSOR_ENGINE_TENSOR_H
 
-#ifndef UNTITLED6_TENSOR_H
-#define UNTITLED6_TENSOR_H
 #include <vector>
-#include <iostream>
 
-
-class tensor {
+class Tensor {
+public:
     std::vector<float> data;
-    std::vector<int> shape; //number of elements in each dimension {3,5,4}
+    std::vector<int>   shape;
 
-    tensor(std::vector<float> shape_in) {
-        shape = shape_in;
-        //create tensor filled with zeros
-        for (int dim : shape) {
-            total = total * dim;
-        }
+    Tensor() = default;
 
+    Tensor(std::vector<int> shape_in) : shape(shape_in) {
+        int total = 1;
+        for (int dim : shape) total *= dim;
         data.resize(total, 0.0f);
-
-
-
     }
-    //returns the reference to the value in data
+
     float& at(int i, int j) {
-        int cols = shape[1];
-        return data[cols * i + j];
+        return data[i * shape[1] + j];
+    }
+
+    int numel() const {
+        int total = 1;
+        for (int d : shape) total *= d;
+        return total;
     }
 };
 
-
-#endif //UNTITLED6_TENSOR_H
+#endif

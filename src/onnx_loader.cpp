@@ -6,137 +6,141 @@
 #include <string>
 #include <cstring>
 #include "onnx.pb.h"
+#include "../arena.h"
+#include "../registry.h"
+#include "../tensor.h"
 
-// Simple flat buffer to hold weights
-struct WeightStore {
-    std::unordered_map<std::string, std::vector<float>> weights;
-    std::unordered_map<std::string, std::vector<int>>   shapes;
-
-    void load(const std::string& name, const std::vector<int>& shape, const float* data, size_t n) {
-        shapes[name] = shape;
-        weights[name] = std::vector<float>(data, data + n);
-    }
-};
-
-// Simple tensor: shape + flat data pointer
-struct Tensor {
-    std::vector<float> data;
-    std::vector<int>   shape;
-};
-
-// GEMM: C = A @ B.T + bias  (ONNX Gemm with transB=1 by default)
-void gemm(const float* A, const float* B, const float* bias,
-          float* C, int M, int N, int K) {
-    for (int i = 0; i < M; i++) {
-        for (int j = 0; j < N; j++) {
-            float sum = bias ? bias[j] : 0.0f;
-            for (int k = 0; k < K; k++) {
-                sum += A[i * K + k] * B[j * K + k];  // B is transposed
-            }
-            C[i * N + j] = sum;
-        }
-    }
-}
-
-// ReLU
-void relu(float* x, int n) {
-    for (int i = 0; i < n; i++)
-        x[i] = x[i] > 0.0f ? x[i] : 0.0f;
-}
-
-int main() {
-    GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-    // Load the ONNX file
+onnx::ModelProto load_model(const std::string& path) {
+    std::ifstream in(path, std::ios::binary);
+    if (!in) throw std::runtime_error("Cannot open: " + path);
     onnx::ModelProto model;
-    std::ifstream in("/Users/keanulim/projects/tensor-engine/model_inline.onnx", std::ios::binary);
-    if (!in) { std::cerr << "Cannot open toy.onnx\n"; return 1; }
-    if (!model.ParseFromIstream(&in)) { std::cerr << "Failed to parse\n"; return 1; }
+    if (!model.ParseFromIstream(&in)) throw std::runtime_error("Failed to parse ONNX file");
+    return model;
+}
 
+void load_weights(const onnx::ModelProto& model,
+                  Arena& arena,
+                  std::unordered_map<std::string, Tensor>& tensors) {
     const auto& graph = model.graph();
 
-    // Load weights into WeightStore
-    WeightStore store;
     for (const auto& init : graph.initializer()) {
         std::vector<int> shape;
         size_t n = 1;
         for (auto d : init.dims()) { shape.push_back((int)d); n *= d; }
 
-        std::vector<float> values(n);
+        float* dst = arena.alloc_static(n);
+
         if (!init.raw_data().empty()) {
-            // stored as raw bytes
-            const float* data = reinterpret_cast<const float*>(init.raw_data().data());
-            values.assign(data, data + n);
-        } else if (init.float_data_size() > 0) {
-            // stored as repeated float
-            values.assign(init.float_data().begin(), init.float_data().end());
+            const float* src = reinterpret_cast<const float*>(init.raw_data().data());
+            std::memcpy(dst, src, n * sizeof(float));
         } else {
-            std::cerr << "Warning: weight " << init.name() << " has no data!\n";
+            for (size_t i = 0; i < n; i++)
+                dst[i] = init.float_data((int)i);
         }
 
-        store.load(init.name(), shape, values.data(), n);
-        std::cout << "Loaded weight: " << init.name() << " shape: [";
+        Tensor t;
+        t.shape = shape;
+        t.data  = std::vector<float>(dst, dst + n);
+        tensors[init.name()] = t;
+
+        std::cout << "Loaded: " << init.name() << " [";
         for (int i = 0; i < (int)shape.size(); i++)
             std::cout << shape[i] << (i+1<(int)shape.size()?",":"");
         std::cout << "]\n";
     }
+}
 
-    // Build a name -> tensor map for intermediate activations
-    std::unordered_map<std::string, Tensor> tensors;
+void run_forward(const onnx::ModelProto& model,
+                 std::unordered_map<std::string, Tensor>& tensors,
+                 Arena& arena) {
+    const auto& graph = model.graph();
+    OpRegistry registry = build_registry();
 
-    // Seed the input: batch=1, input_dim=64, all ones
-    Tensor input;
-    input.shape = {1, 64};
-    input.data.assign(64, 1.0f);
-    tensors["input"] = input;
-
-    // Execute each node in order
     for (const auto& node : graph.node()) {
         const std::string& op = node.op_type();
-        std::cout << "Running op: " << op << "\n";
+        std::cout << "Running: " << op << "\n";
 
         if (op == "Gemm") {
-            const std::string& in_name     = node.input(0);
-            const std::string& weight_name = node.input(1);
-            const std::string& bias_name   = node.input(2);
-            const std::string& out_name    = node.output(0);
-
-            auto& X = tensors[in_name];
-            auto& W = store.weights[weight_name];
-            auto& b = store.weights[bias_name];
-            auto& Wshape = store.shapes[weight_name];
+            auto& X      = tensors[node.input(0)];
+            auto& W      = tensors[node.input(1)];
+            auto& b      = tensors[node.input(2)];
+            auto& Wshape = W.shape;
 
             int M = X.shape[0];
-            int N = Wshape[0];   // output features
-            int K = Wshape[1];   // input features
+            int N = Wshape[0];
+            int K = Wshape[1];
+
+            float* out_ptr = arena.alloc(M * N);
+
+            // GEMM with transB: C = X @ W.T + bias
+            for (int i = 0; i < M; i++)
+                for (int j = 0; j < N; j++) {
+                    float sum = b.data[j];
+                    for (int k = 0; k < K; k++)
+                        sum += X.data[i*K+k] * W.data[j*K+k];
+                    out_ptr[i*N+j] = sum;
+                }
 
             Tensor out;
             out.shape = {M, N};
-            out.data.resize(M * N);
-            gemm(X.data.data(), W.data(), b.data(), out.data.data(), M, N, K);
-            tensors[out_name] = out;
+            out.data  = std::vector<float>(out_ptr, out_ptr + M*N);
+            tensors[node.output(0)] = out;
 
         } else if (op == "Relu") {
-            const std::string& in_name  = node.input(0);
-            const std::string& out_name = node.output(0);
+            auto& in = tensors[node.input(0)];
+            int n = (int)in.data.size();
+            float* out_ptr = arena.alloc(n);
 
-            Tensor out = tensors[in_name];  // copy
-            relu(out.data.data(), (int)out.data.size());
-            tensors[out_name] = out;
+            OpArgs args;
+            args.A   = in.data.data();
+            args.out = out_ptr;
+            args.n   = n;
+            registry["relu"](args);
+
+            Tensor out;
+            out.shape = in.shape;
+            out.data  = std::vector<float>(out_ptr, out_ptr + n);
+            tensors[node.output(0)] = out;
 
         } else {
-            std::cout << "  (skipping unknown op: " << op << ")\n";
+            std::cout << "  skipping: " << op << "\n";
         }
     }
+}
 
-    // Print the final output
-    const std::string& last_out = graph.node(graph.node_size()-1).output(0);
-    auto& result = tensors[last_out];
-    std::cout << "\nOutput logits (" << result.shape[0]
-              << "x" << result.shape[1] << "):\n";
-    for (float v : result.data)
-        std::cout << v << " ";
-    std::cout << "\n";
+int main() {
+    GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+    try {
+        // 100MB arena — enough for this toy model
+        Arena arena(100 * 1024 * 1024);
+
+        auto model = load_model("/Users/keanulim/projects/tensor-engine/model_inline.onnx");
+
+        std::unordered_map<std::string, Tensor> tensors;
+
+        load_weights(model, arena, tensors);
+
+        // Seed input: batch=1, dim=64, all ones
+        Tensor input;
+        input.shape = {1, 64};
+        input.data.assign(64, 1.0f);
+        tensors["input"] = input;
+
+        run_forward(model, tensors, arena);
+
+        // Print output
+        const std::string& last = model.graph().node(
+            model.graph().node_size()-1).output(0);
+        auto& result = tensors[last];
+        std::cout << "\nOutput logits:\n";
+        for (float v : result.data) std::cout << v << " ";
+        std::cout << "\n";
+
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << "\n";
+        return 1;
+    }
 
     google::protobuf::ShutdownProtobufLibrary();
     return 0;
