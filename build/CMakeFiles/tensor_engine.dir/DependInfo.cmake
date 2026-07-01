@@ -8,7 +8,9 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/Users/keanulim/projects/tensor-engine/kernels.cpp" "CMakeFiles/tensor_engine.dir/kernels.cpp.o" "gcc" "CMakeFiles/tensor_engine.dir/kernels.cpp.o.d"
   "/Users/keanulim/projects/tensor-engine/main.cpp" "CMakeFiles/tensor_engine.dir/main.cpp.o" "gcc" "CMakeFiles/tensor_engine.dir/main.cpp.o.d"
+  "/Users/keanulim/projects/tensor-engine/registry.cpp" "CMakeFiles/tensor_engine.dir/registry.cpp.o" "gcc" "CMakeFiles/tensor_engine.dir/registry.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

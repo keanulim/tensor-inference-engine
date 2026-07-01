@@ -1,6 +1,10 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/tensor_engine.dir/kernels.cpp.o"
+  "CMakeFiles/tensor_engine.dir/kernels.cpp.o.d"
   "CMakeFiles/tensor_engine.dir/main.cpp.o"
   "CMakeFiles/tensor_engine.dir/main.cpp.o.d"
+  "CMakeFiles/tensor_engine.dir/registry.cpp.o"
+  "CMakeFiles/tensor_engine.dir/registry.cpp.o.d"
   "tensor_engine"
   "tensor_engine.pdb"
 )

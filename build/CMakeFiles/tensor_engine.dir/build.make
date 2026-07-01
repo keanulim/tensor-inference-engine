@@ -76,27 +76,59 @@ CMakeFiles/tensor_engine.dir/main.cpp.o: CMakeFiles/tensor_engine.dir/flags.make
 CMakeFiles/tensor_engine.dir/main.cpp.o: /Users/keanulim/projects/tensor-engine/main.cpp
 CMakeFiles/tensor_engine.dir/main.cpp.o: CMakeFiles/tensor_engine.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/keanulim/projects/tensor-engine/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/tensor_engine.dir/main.cpp.o"
-	clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/tensor_engine.dir/main.cpp.o -MF CMakeFiles/tensor_engine.dir/main.cpp.o.d -o CMakeFiles/tensor_engine.dir/main.cpp.o -c /Users/keanulim/projects/tensor-engine/main.cpp
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/tensor_engine.dir/main.cpp.o -MF CMakeFiles/tensor_engine.dir/main.cpp.o.d -o CMakeFiles/tensor_engine.dir/main.cpp.o -c /Users/keanulim/projects/tensor-engine/main.cpp
 
 CMakeFiles/tensor_engine.dir/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/tensor_engine.dir/main.cpp.i"
-	clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/keanulim/projects/tensor-engine/main.cpp > CMakeFiles/tensor_engine.dir/main.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/keanulim/projects/tensor-engine/main.cpp > CMakeFiles/tensor_engine.dir/main.cpp.i
 
 CMakeFiles/tensor_engine.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/tensor_engine.dir/main.cpp.s"
-	clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/keanulim/projects/tensor-engine/main.cpp -o CMakeFiles/tensor_engine.dir/main.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/keanulim/projects/tensor-engine/main.cpp -o CMakeFiles/tensor_engine.dir/main.cpp.s
+
+CMakeFiles/tensor_engine.dir/kernels.cpp.o: CMakeFiles/tensor_engine.dir/flags.make
+CMakeFiles/tensor_engine.dir/kernels.cpp.o: /Users/keanulim/projects/tensor-engine/kernels.cpp
+CMakeFiles/tensor_engine.dir/kernels.cpp.o: CMakeFiles/tensor_engine.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/keanulim/projects/tensor-engine/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/tensor_engine.dir/kernels.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/tensor_engine.dir/kernels.cpp.o -MF CMakeFiles/tensor_engine.dir/kernels.cpp.o.d -o CMakeFiles/tensor_engine.dir/kernels.cpp.o -c /Users/keanulim/projects/tensor-engine/kernels.cpp
+
+CMakeFiles/tensor_engine.dir/kernels.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/tensor_engine.dir/kernels.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/keanulim/projects/tensor-engine/kernels.cpp > CMakeFiles/tensor_engine.dir/kernels.cpp.i
+
+CMakeFiles/tensor_engine.dir/kernels.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/tensor_engine.dir/kernels.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/keanulim/projects/tensor-engine/kernels.cpp -o CMakeFiles/tensor_engine.dir/kernels.cpp.s
+
+CMakeFiles/tensor_engine.dir/registry.cpp.o: CMakeFiles/tensor_engine.dir/flags.make
+CMakeFiles/tensor_engine.dir/registry.cpp.o: /Users/keanulim/projects/tensor-engine/registry.cpp
+CMakeFiles/tensor_engine.dir/registry.cpp.o: CMakeFiles/tensor_engine.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/keanulim/projects/tensor-engine/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/tensor_engine.dir/registry.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/tensor_engine.dir/registry.cpp.o -MF CMakeFiles/tensor_engine.dir/registry.cpp.o.d -o CMakeFiles/tensor_engine.dir/registry.cpp.o -c /Users/keanulim/projects/tensor-engine/registry.cpp
+
+CMakeFiles/tensor_engine.dir/registry.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/tensor_engine.dir/registry.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/keanulim/projects/tensor-engine/registry.cpp > CMakeFiles/tensor_engine.dir/registry.cpp.i
+
+CMakeFiles/tensor_engine.dir/registry.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/tensor_engine.dir/registry.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/keanulim/projects/tensor-engine/registry.cpp -o CMakeFiles/tensor_engine.dir/registry.cpp.s
 
 # Object files for target tensor_engine
 tensor_engine_OBJECTS = \
-"CMakeFiles/tensor_engine.dir/main.cpp.o"
+"CMakeFiles/tensor_engine.dir/main.cpp.o" \
+"CMakeFiles/tensor_engine.dir/kernels.cpp.o" \
+"CMakeFiles/tensor_engine.dir/registry.cpp.o"
 
 # External object files for target tensor_engine
 tensor_engine_EXTERNAL_OBJECTS =
 
 tensor_engine: CMakeFiles/tensor_engine.dir/main.cpp.o
+tensor_engine: CMakeFiles/tensor_engine.dir/kernels.cpp.o
+tensor_engine: CMakeFiles/tensor_engine.dir/registry.cpp.o
 tensor_engine: CMakeFiles/tensor_engine.dir/build.make
 tensor_engine: CMakeFiles/tensor_engine.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/keanulim/projects/tensor-engine/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable tensor_engine"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/keanulim/projects/tensor-engine/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable tensor_engine"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/tensor_engine.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

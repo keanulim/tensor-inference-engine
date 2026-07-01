@@ -92,13 +92,6 @@ all: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/keanulim/projects/tensor-engine/build/CMakeFiles 0
 .PHONY : all
 
-# The main codegen target
-codegen: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/keanulim/projects/tensor-engine/build/CMakeFiles /Users/keanulim/projects/tensor-engine/build//CMakeFiles/progress.marks
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 codegen
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/keanulim/projects/tensor-engine/build/CMakeFiles 0
-.PHONY : codegen
-
 # The main clean target
 clean:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 clean
@@ -136,6 +129,30 @@ tensor_engine/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/tensor_engine.dir/build.make CMakeFiles/tensor_engine.dir/build
 .PHONY : tensor_engine/fast
 
+kernels.o: kernels.cpp.o
+.PHONY : kernels.o
+
+# target to build an object file
+kernels.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tensor_engine.dir/build.make CMakeFiles/tensor_engine.dir/kernels.cpp.o
+.PHONY : kernels.cpp.o
+
+kernels.i: kernels.cpp.i
+.PHONY : kernels.i
+
+# target to preprocess a source file
+kernels.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tensor_engine.dir/build.make CMakeFiles/tensor_engine.dir/kernels.cpp.i
+.PHONY : kernels.cpp.i
+
+kernels.s: kernels.cpp.s
+.PHONY : kernels.s
+
+# target to generate assembly for a file
+kernels.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tensor_engine.dir/build.make CMakeFiles/tensor_engine.dir/kernels.cpp.s
+.PHONY : kernels.cpp.s
+
 main.o: main.cpp.o
 .PHONY : main.o
 
@@ -160,19 +177,48 @@ main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/tensor_engine.dir/build.make CMakeFiles/tensor_engine.dir/main.cpp.s
 .PHONY : main.cpp.s
 
+registry.o: registry.cpp.o
+.PHONY : registry.o
+
+# target to build an object file
+registry.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tensor_engine.dir/build.make CMakeFiles/tensor_engine.dir/registry.cpp.o
+.PHONY : registry.cpp.o
+
+registry.i: registry.cpp.i
+.PHONY : registry.i
+
+# target to preprocess a source file
+registry.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tensor_engine.dir/build.make CMakeFiles/tensor_engine.dir/registry.cpp.i
+.PHONY : registry.cpp.i
+
+registry.s: registry.cpp.s
+.PHONY : registry.s
+
+# target to generate assembly for a file
+registry.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tensor_engine.dir/build.make CMakeFiles/tensor_engine.dir/registry.cpp.s
+.PHONY : registry.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... codegen"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... tensor_engine"
+	@echo "... kernels.o"
+	@echo "... kernels.i"
+	@echo "... kernels.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... registry.o"
+	@echo "... registry.i"
+	@echo "... registry.s"
 .PHONY : help
 
 

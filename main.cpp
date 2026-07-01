@@ -1,18 +1,24 @@
 #include <iostream>
-
-// TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+#include "registry.h"
 
 int main() {
-    // TIP Press <shortcut actionId="RenameElement"/> when your caret is at the <b>lang</b> variable name to see how CLion can help you rename it.
+    OpRegistry registry = build_registry();
 
-    const auto lang = "C++";
-    std::cout << "Hello and welcome to " << lang << "!\n";
+    // test softmax
+    float input[]  = {1.0f, 2.0f, 3.0f};
+    float output[] = {0.0f, 0.0f, 0.0f};
 
-    for (int i = 1; i <= 5; i++) {
-        // TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-        std::cout << "i = " << i << std::endl;
+    OpArgs args;
+    args.A   = input;
+    args.out = output;
+    args.n   = 3;
+
+    registry["softmax"](args);
+
+    // should print ~0.09, 0.24, 0.66
+    for (int i = 0; i < 3; i++) {
+        std::cout << output[i] << "\n";
     }
 
     return 0;
-    // TIP See CLion help at <a href="https://www.jetbrains.com/help/clion/">jetbrains.com/help/clion/</a>. Also, you can try interactive lessons for CLion by selecting 'Help | Learn IDE Features' from the main menu.
 }
