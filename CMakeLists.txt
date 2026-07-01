@@ -20,6 +20,9 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
+find_package(Protobuf REQUIRED)
+find_package(absl REQUIRED)
+
 add_executable(tensor_engine main.cpp kernels.cpp registry.cpp)
 
 add_executable(tensor_tests
@@ -33,12 +36,30 @@ add_executable(tensor_tests
         tests/test_embedding_lookup.cpp
 )
 
-add_executable(bench_gemm benchmarks/bench_gemm.cpp kernels.cpp)
-target_include_directories(bench_gemm PRIVATE ${CMAKE_OSX_SYSROOT}/usr/include/c++/v1)
-
 target_link_libraries(tensor_tests
         GTest::gtest_main
 )
 
 include(GoogleTest)
 gtest_discover_tests(tensor_tests)
+
+add_executable(bench_all benchmarks/bench_all.cpp kernels.cpp)
+target_include_directories(bench_all PRIVATE ${CMAKE_OSX_SYSROOT}/usr/include/c++/v1)
+
+add_executable(onnx_loader
+        src/onnx_loader.cpp
+        third_party/onnx/onnx.pb.cc
+)
+
+target_include_directories(onnx_loader PRIVATE
+        ${CMAKE_OSX_SYSROOT}/usr/include/c++/v1
+        ${Protobuf_INCLUDE_DIRS}
+        third_party/onnx
+)
+
+target_link_libraries(onnx_loader
+        ${Protobuf_LIBRARIES}
+        absl::log
+        absl::log_internal_message
+        absl::log_internal_check_op
+)
