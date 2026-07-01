@@ -2,18 +2,22 @@
 // Created by Keanu Lim on
 //
 #include <cmath>
+#include <algorithm>
 
 
 void geMM(const float* A, const float* B, float* C, int M, int N, int K) {
+    for (int i = 0; i < M * N; i++) C[i] = 0.0f;
+
     for (int i = 0; i < M; i++) {
         for (int k = 0; k < K; k++) {
             for (int j = 0; j < N; j++) {
-                if (k == 0) C[i * N + j] = 0.0f;
                 C[i * N + j] += A[i * K + k] * B[k * N + j];
             }
         }
     }
 }
+
+
 
 void reLU(const float* in, float* out, int n) {
     for (int i = 0; i < n; i++) {

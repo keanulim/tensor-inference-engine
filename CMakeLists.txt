@@ -33,6 +33,9 @@ add_executable(tensor_tests
         tests/test_embedding_lookup.cpp
 )
 
+add_executable(bench_gemm benchmarks/bench_gemm.cpp kernels.cpp)
+target_include_directories(bench_gemm PRIVATE ${CMAKE_OSX_SYSROOT}/usr/include/c++/v1)
+
 target_link_libraries(tensor_tests
         GTest::gtest_main
 )
