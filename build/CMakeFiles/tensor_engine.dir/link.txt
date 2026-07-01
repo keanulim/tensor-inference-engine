@@ -1,1 +1,0 @@
-/usr/bin/c++  -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/tensor_engine.dir/main.cpp.o CMakeFiles/tensor_engine.dir/kernels.cpp.o CMakeFiles/tensor_engine.dir/registry.cpp.o -o tensor_engine
