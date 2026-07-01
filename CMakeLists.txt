@@ -5,7 +5,37 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_OSX_SYSROOT /Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk)
 
-add_executable(tensor_engine main.cpp kernels.cpp registry.cpp)
-target_include_directories(tensor_engine PRIVATE ${CMAKE_OSX_SYSROOT}/usr/include/c++/v1)
+add_compile_options(-isystem /Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/usr/include/c++/v1)
+
+enable_testing()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+include(FetchContent)
+
+FetchContent_Declare(
+        googletest
+        URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+)
+FetchContent_MakeAvailable(googletest)
+
+add_executable(tensor_engine main.cpp kernels.cpp registry.cpp)
+
+add_executable(tensor_tests
+        tests/test_main.cpp
+        kernels.cpp
+        tests/test_softmax.cpp
+        tests/test_layernorm.cpp
+        tests/test_gemm.cpp
+        tests/test_relu.cpp
+        tests/test_silu.cpp
+        tests/test_embedding_lookup.cpp
+)
+
+target_link_libraries(tensor_tests
+        GTest::gtest_main
+)
+
+include(GoogleTest)
+gtest_discover_tests(tensor_tests)
